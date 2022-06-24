@@ -39,7 +39,7 @@ def FormatSuggestions(Suggestion):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*{0}*\n *{1}* ​{2}​ {3}\n {4}\n {5}{6}\n {7}​\n {8}​\n {9}\n {10}\n".format(PlacesForLunchFile.loc[i].at["Name"], PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"])
+                    "text": "*{0}*\n *{1}* ​{2}​ {3}\n {4}\n {5}{6}\n {7}​\n {8}​\n {9}\n {10}\n {11}\n".format(PlacesForLunchFile.loc[i].at["Name"], PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"])
                 },
                 "accessory": {
                     "type": "image",
@@ -47,28 +47,6 @@ def FormatSuggestions(Suggestion):
                     "alt_text": "food image"
                 }
             }
-
-def FormatLinks(Suggestion):
-    for i in range(len(PlacesForLunchFile)):
-        if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
-            return {
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": " "
-			},
-			"accessory": {
-				"type": "button",
-				"text": {
-					"type": "plain_text",
-					"text": PlacesForLunchFile.loc[i].at["Name"],
-					"emoji": True
-				},
-				"value": "click_me_123",
-				"url": PlacesForLunchFile.loc[i].at["Tripadvisor"],
-				"action_id": "button-action"
-			}
-		}
 
 def getSuggestion():
     Suggestion=ListPlaces[randint(0, len(ListPlaces)-1)]
@@ -97,8 +75,6 @@ def SendSuggestionLunch():
     
     for suggestion in Suggestions:
         blocks.append(FormatSuggestions(suggestion))
-        blocks.append(FormatLinks(suggestion))
-
 
     blocks.append({"type": "divider"})
     blocks.append({"type": "section","text": {"type": "mrkdwn","text": "*Key*\n 🌱= vegan\n ​🥕​= vegetarian\n "}})
