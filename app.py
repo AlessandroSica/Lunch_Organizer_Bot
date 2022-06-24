@@ -32,6 +32,17 @@ for i in range(len(PlacesForLunchFile)):
     for j in range(PlacesForLunchFile.loc[i].at["Votes"]):
         ListPlaces+=[PlacesForLunchFile.loc[i].at["Name"]]
 
+def FormatHeaders(Suggestion):
+    for i in range(len(PlacesForLunchFile)):
+        if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
+            return {
+			    "type": "header",
+			    "text": {
+			    	"type": "plain_text",
+			    	"text": PlacesForLunchFile.loc[i].at["Name"]
+			    }
+		    }
+
 def FormatSuggestions(Suggestion):
     for i in range(len(PlacesForLunchFile)):
         if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
@@ -39,7 +50,7 @@ def FormatSuggestions(Suggestion):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*{0}*\n *{1}* ​{2}​ {3}\n {4}\n {5}{6}\n {7}​\n {8}​\n {9}\n {10}\n <{11}| Learn more...>\n".format(PlacesForLunchFile.loc[i].at["Name"], PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"])
+                    "text": "*{0}* ​{1}​ {2}\n {3}\n {4}{5}\n {6}​\n {7}​\n {8}\n {9}\n <{10}| Learn more...>\n".format(PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"])
                 },
                 "accessory": {
                     "type": "image",
@@ -68,12 +79,13 @@ def getSuggestion():
 def SendSuggestionLunch():
     blocks=[]
 
-    blocks.append({"type": "section","text": {"type": "mrkdwn", "text": "*Have you already decided where to lunch? (🙂 = Yes, 😐 = No)*\n *Here there are the suggestion of the day:*"}})
+    blocks.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch? (🙂 = Yes, 😐 = No)\n Here there are the suggestion of the day:"}})
     blocks.append({"type": "divider"})
 
     Suggestions=getSuggestion()
     
     for suggestion in Suggestions:
+        blocks.append(FormatHeaders(suggestion))
         blocks.append(FormatSuggestions(suggestion))
 
     blocks.append({"type": "divider"})
