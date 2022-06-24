@@ -39,7 +39,7 @@ def FormatSuggestions(Suggestion):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*{0}*\n *{1}* ​{2}​ {3}\n {4}\n {5}{6}\n {7}​\n {8}​\n {9}\n {10}\n {11}\n".format(PlacesForLunchFile.loc[i].at["Name"], PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"])
+                    "text": "*{0}*\n *{1}* ​{2}​ {3}\n {4}\n {5}{6}\n {7}​\n {8}​\n {9}\n {10}\n <{11}| Learn more...>\n".format(PlacesForLunchFile.loc[i].at["Name"], PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"])
                 },
                 "accessory": {
                     "type": "image",
