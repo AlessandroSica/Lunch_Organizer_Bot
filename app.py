@@ -48,8 +48,21 @@ def FormatSuggestion(Suggestion):
                 }
             }
 
-def getsuggestion():
-    return []
+def getSuggestion():
+    Suggestion=ListPlaces[randint(0, len(ListPlaces)-1)]
+    SuggestionList=[Suggestion]
+    for i in range(2):
+        NotDifferent=True
+        while(NotDifferent):
+            Suggestion=ListPlaces[randint(0, len(ListPlaces)-1)]
+            for j in (SuggestionList):
+                if j==Suggestion:
+                    Suggestion=SuggestionList[-1]
+                    NotDifferent=True
+                else:
+                    NotDifferent=False
+        SuggestionList+=[Suggestion]
+    return SuggestionList
 
 @app.route('/')
 def SendSuggestionLunch():
@@ -58,7 +71,7 @@ def SendSuggestionLunch():
     blocks.append({"type": "section","text": {"type": "mrkdwn", "text": "*Have you already decided where to lunch? (🙂 = Yes, 😐 = No)*\n *Here there are the suggestion of the day:*"}})
     blocks.append({"type": "divider"})
 
-    Suggestions=getsuggestion()
+    Suggestions=getSuggestion()
     
     for suggestion in Suggestions:
         blocks.append(FormatSuggestion(suggestion))
