@@ -26,13 +26,13 @@ def PUT():
 def DELETE():
     return "DELETE"
 
-PlacesForLunchFile= pd.read_csv("LunchPlaces-info-Sheet1.csv")
+PlacesForLunchFile= pd.read_csv("LunchPlaces-info-Sheet1(1).csv")
 ListPlaces=[]
 for i in range(len(PlacesForLunchFile)):
     for j in range(PlacesForLunchFile.loc[i].at["Votes"]):
         ListPlaces+=[PlacesForLunchFile.loc[i].at["Name"]]
 
-def FormatSuggestion(Suggestion):
+def FormatSuggestions(Suggestion):
     for i in range(len(PlacesForLunchFile)):
         if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
             return {
@@ -47,6 +47,28 @@ def FormatSuggestion(Suggestion):
                     "alt_text": "food image"
                 }
             }
+
+def FormatLinks(Suggestion):
+    for i in range(len(PlacesForLunchFile)):
+        if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
+            return {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": " "
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": PlacesForLunchFile.loc[i].at["Name"],
+					"emoji": True
+				},
+				"value": "click_me_123",
+				"url": PlacesForLunchFile.loc[i].at["Tripadvisor"],
+				"action_id": "button-action"
+			}
+		}
 
 def getSuggestion():
     Suggestion=ListPlaces[randint(0, len(ListPlaces)-1)]
@@ -74,7 +96,9 @@ def SendSuggestionLunch():
     Suggestions=getSuggestion()
     
     for suggestion in Suggestions:
-        blocks.append(FormatSuggestion(suggestion))
+        blocks.append(FormatSuggestions(suggestion))
+        blocks.append(FormatLinks(suggestion))
+
 
     blocks.append({"type": "divider"})
     blocks.append({"type": "section","text": {"type": "mrkdwn","text": "*Key*\n 🌱= vegan\n ​🥕​= vegetarian\n "}})
