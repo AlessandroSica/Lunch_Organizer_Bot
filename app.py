@@ -26,7 +26,7 @@ def PUT():
 def DELETE():
     return "DELETE"
 
-PlacesForLunchFile= pd.read_csv("LunchPlaces-info-Sheet1(1).csv")
+PlacesForLunchFile= pd.read_csv("LunchPlaces-info-Sheet2.csv")
 ListPlaces=[]
 for i in range(len(PlacesForLunchFile)):
     for j in range(PlacesForLunchFile.loc[i].at["Votes"]):
@@ -50,7 +50,7 @@ def FormatSuggestions(Suggestion):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*{0}* ​{1}​ {2}\n {3}\n {4}{5}\n {6}​\n {7}​\n {8}\n {9}\n <{10}| Learn more...>\n".format(PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"])
+                    "text": "*{0}* ​{1}​ {2}\n {3}\n {4}{5}\n {6}​\n {7}​\n {8}\n {9}\n <{10}| Learn more...>\n".format(PlacesForLunchFile.loc[i].at["Rating"], PlacesForLunchFile.loc[i].at["Stars"], PlacesForLunchFile.loc[i].at["Reviews"], PlacesForLunchFile.loc[i].at["Description"], PlacesForLunchFile.loc[i].at["Vegan "], PlacesForLunchFile.loc[i].at["Vegeterian"], PlacesForLunchFile.loc[i].at["Delivery"], PlacesForLunchFile.loc[i].at["Take-Away"], PlacesForLunchFile.loc[i].at["Distance"], PlacesForLunchFile.loc[i].at["Price range"], PlacesForLunchFile.loc[i].at["Tripadvisor"]),
                 },
                 "accessory": {
                     "type": "image",
@@ -74,31 +74,44 @@ def getSuggestion():
                     NotDifferent=False
         SuggestionList+=[Suggestion]
     return SuggestionList
+    
+def ChoseEmoji(Suggestion):
+    for i in range(len(PlacesForLunchFile)):
+        if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
+            return PlacesForLunchFile.loc[i].at["emoji"]
 
-ChannelID="office"
+#office
+#test-python-bot
+ChannelID="test-python-bot"
 
 @app.route('/')
 def SendSuggestionLunch():
     global ThreadToken
-    blocks=[]
+    blocks1=[]
+    blocks2=[]
 
-    blocks.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch?"}})
-    blocks.append({"type": "header","text": {"type": "plain_text", "text": "🙂 = Yes, I have already decided\n 🙁 = No, I don't know what to do"}})
-    blocks.append({"type": "header","text": {"type": "plain_text", "text": "Here there are the suggestion of the day:"}})
-    blocks.append({"type": "divider"})
+    blocks1.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch?"}})
+    blocks1.append({"type": "header","text": {"type": "plain_text", "text": ":sunglasses: = Yes, I have already decided\n :dizzy_face: = No, I don't know what to do"}})
+    blocks2.append({"type": "header","text": {"type": "plain_text", "text": "Here there are the suggestion of the day:"}})
+    blocks2.append({"type": "divider"})
 
     Suggestions=getSuggestion()
     
     for suggestion in Suggestions:
-        blocks.append(FormatHeaders(suggestion))
-        blocks.append(FormatSuggestions(suggestion))
+        blocks2.append(FormatHeaders(suggestion))
+        blocks2.append(FormatSuggestions(suggestion))
+    emoji1=ChoseEmoji(Suggestions[0])
+    emoji2=ChoseEmoji(Suggestions[1])
+    emoji3=ChoseEmoji(Suggestions[2])
 
-    blocks.append({"type": "divider"})
-    blocks.append({"type": "section","text": {"type": "mrkdwn","text": "*Key*\n 🌱= vegan\n ​🥕​= vegetarian\n "}})
-    blocks.append({"type": "divider"})
+    blocks2.append({"type": "section","text": {"type": "mrkdwn","text": "*Key*\n 🌱= vegan\n ​🥕​= vegetarian\n "}})
+    blocks2.append({"type": "divider"})
+    blocks2.append({"type": "header","text": {"type": "plain_text", "text": "Do you like any of them?\n {0} = 1\n {1} = 2\n {2} = 3".format(emoji1, emoji2, emoji3)}})
+    blocks2.append({"type": "divider"})
     
-    response = client.chat_postMessage(channel=ChannelID, blocks=blocks)
+    response = client.chat_postMessage(channel=ChannelID, blocks=blocks1)
     ThreadToken=response["ts"]
+    response = client.chat_postMessage(channel=ChannelID, thread_ts=ThreadToken, blocks=blocks2)
 
     return "GET"
 
