@@ -79,7 +79,10 @@ def getSuggestion():
 def SendSuggestionLunch():
     blocks=[]
 
-    blocks.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch? (🙂 = Yes, 😐 = No)\n Here there are the suggestion of the day:"}})
+    blocks.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch?"}})
+    blocks.append({"type": "header","text": {"type": "plain_text", "text": "🙂 = Yes, I have already decided\n 🙃 = Yes, I aready have my lunch with me"}})
+    blocks.append({"type": "header","text": {"type": "plain_text", "text": "😶 = No, I still need to order my lunch\n 😐 = No I don't know where to go\n 🙁 = No, I don't know what to do"}})
+    blocks.append({"type": "header","text": {"type": "plain_text", "text": "Here there are the suggestion of the day:"}})
     blocks.append({"type": "divider"})
 
     Suggestions=getSuggestion()
@@ -93,7 +96,8 @@ def SendSuggestionLunch():
     blocks.append({"type": "divider"})
     
     response = client.chat_postMessage(channel="test-python-bot", blocks=blocks)
-    
+    response = client.chat_postMessage(channel="test-python-bot", thread_ts=response["ts"], text="hello")
+
     return "GET"
 
 @app.route('/tests/:id')
