@@ -75,13 +75,15 @@ def getSuggestion():
         SuggestionList+=[Suggestion]
     return SuggestionList
 
+ChannelID="office"
+
 @app.route('/')
 def SendSuggestionLunch():
+    global ThreadToken
     blocks=[]
 
     blocks.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch?"}})
-    blocks.append({"type": "header","text": {"type": "plain_text", "text": "🙂 = Yes, I have already decided\n 🙃 = Yes, I aready have my lunch with me"}})
-    blocks.append({"type": "header","text": {"type": "plain_text", "text": "😶 = No, I still need to order my lunch\n 😐 = No I don't know where to go\n 🙁 = No, I don't know what to do"}})
+    blocks.append({"type": "header","text": {"type": "plain_text", "text": "🙂 = Yes, I have already decided\n 🙁 = No, I don't know what to do"}})
     blocks.append({"type": "header","text": {"type": "plain_text", "text": "Here there are the suggestion of the day:"}})
     blocks.append({"type": "divider"})
 
@@ -95,11 +97,13 @@ def SendSuggestionLunch():
     blocks.append({"type": "section","text": {"type": "mrkdwn","text": "*Key*\n 🌱= vegan\n ​🥕​= vegetarian\n "}})
     blocks.append({"type": "divider"})
     
-    response = client.chat_postMessage(channel="test-python-bot", blocks=blocks)
-    response = client.chat_postMessage(channel="test-python-bot", thread_ts=response["ts"], text="hello")
+    response = client.chat_postMessage(channel=ChannelID, blocks=blocks)
+    ThreadToken=response["ts"]
 
     return "GET"
 
-@app.route('/tests/:id')
-def test():
-    return "GET a new test"
+@app.route('/Thread Message')
+def ThreadMessage():
+    response = client.chat_postMessage(channel=ChannelID, thread_ts=ThreadToken, text="Have you decided now? Hurry up!")
+
+    return "GET"
