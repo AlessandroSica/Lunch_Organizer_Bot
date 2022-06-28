@@ -6,8 +6,6 @@ import time
 from slack_sdk.web import WebClient
 from slack_sdk.webhook import WebhookClient
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 token= os.getenv('TOKEN')
 client = WebClient(token)
@@ -80,9 +78,7 @@ def ChoseEmoji(Suggestion):
         if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
             return PlacesForLunchFile.loc[i].at["emoji"]
 
-#office
-#test-python-bot
-ChannelID="test-python-bot"
+ChannelName= os.getenv('CHANNEL_NAME')
 
 @app.route('/')
 def SendSuggestionLunch():
@@ -108,15 +104,15 @@ def SendSuggestionLunch():
     blocks2.append({"type": "divider"})
     blocks2.append({"type": "header","text": {"type": "plain_text", "text": "Do you like any of them?\n {0} = 1\n {1} = 2\n {2} = 3".format(emoji1, emoji2, emoji3)}})
     blocks2.append({"type": "divider"})
-    
-    response = client.chat_postMessage(channel=ChannelID, blocks=blocks1)
+
+    response = client.chat_postMessage(channel=ChannelName, blocks=blocks1)
     ThreadToken=response["ts"]
-    response = client.chat_postMessage(channel=ChannelID, thread_ts=ThreadToken, blocks=blocks2)
+    response = client.chat_postMessage(channel=ChannelName, thread_ts=ThreadToken, blocks=blocks2)
 
     return "GET"
 
 @app.route('/Thread Message')
 def ThreadMessage():
-    response = client.chat_postMessage(channel=ChannelID, thread_ts=ThreadToken, text="Have you decided now? Hurry up!")
+    response = client.chat_postMessage(channel=ChannelName, thread_ts=ThreadToken, text="Have you decided now? Hurry up!")
 
     return "GET"
