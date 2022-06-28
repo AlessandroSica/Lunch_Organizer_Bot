@@ -24,7 +24,7 @@ def PUT():
 def DELETE():
     return "DELETE"
 
-PlacesForLunchFile= pd.read_csv("LunchPlaces-info-Sheet8.csv")
+PlacesForLunchFile= pd.read_csv("LunchPlaces-info-Sheet9.csv")
 ListPlaces=[]
 for i in range(len(PlacesForLunchFile)):
     for j in range(PlacesForLunchFile.loc[i].at["Votes"]):
@@ -37,7 +37,7 @@ def FormatHeaders(Suggestion):
 			    "type": "header",
 			    "text": {
 			    	"type": "plain_text",
-			    	"text": PlacesForLunchFile.loc[i].at["Name"]
+			    	"text": "{1} {0}".format(PlacesForLunchFile.loc[i].at["Name"], PlacesForLunchFile.loc[i].at["Emoji"])
 			    }
 		    }
 
@@ -73,10 +73,10 @@ def getSuggestion():
         SuggestionList+=[Suggestion]
     return SuggestionList
     
-def ChoseEmoji(Suggestion):
-    for i in range(len(PlacesForLunchFile)):
-        if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
-            return PlacesForLunchFile.loc[i].at["emoji"]
+#def ChoseEmoji(Suggestion):
+#    for i in range(len(PlacesForLunchFile)):
+#        if Suggestion==PlacesForLunchFile.loc[i].at["Name"]:
+#            return PlacesForLunchFile.loc[i].at["emoji"]
 
 ChannelName= os.getenv('CHANNEL_NAME')
 
@@ -87,7 +87,7 @@ def SendSuggestionLunch():
     blocks2=[]
 
     blocks1.append({"type": "header","text": {"type": "plain_text", "text": "Have you already decided where to lunch?"}})
-    blocks1.append({"type": "header","text": {"type": "plain_text", "text": ":sunglasses: = Yes, I have already decided\n :dizzy_face: = No, I don't know what to do"}})
+    blocks1.append({"type": "section","text": {"type": "plain_text", "text": ":sunglasses: = Yes, I have already decided\n :dizzy_face: = No, I don't know what to do"}})
     blocks2.append({"type": "header","text": {"type": "plain_text", "text": "Here there are the suggestion of the day:"}})
     blocks2.append({"type": "divider"})
 
@@ -96,13 +96,10 @@ def SendSuggestionLunch():
     for suggestion in Suggestions:
         blocks2.append(FormatHeaders(suggestion))
         blocks2.append(FormatSuggestions(suggestion))
-    emoji1=ChoseEmoji(Suggestions[0])
-    emoji2=ChoseEmoji(Suggestions[1])
-    emoji3=ChoseEmoji(Suggestions[2])
 
     blocks2.append({"type": "section","text": {"type": "mrkdwn","text": "*Key*\n 🌱= vegan\n ​🥕​= vegetarian\n "}})
     blocks2.append({"type": "divider"})
-    blocks2.append({"type": "header","text": {"type": "plain_text", "text": "Do you like any of them?\n {0} = 1\n {1} = 2\n {2} = 3".format(emoji1, emoji2, emoji3)}})
+    blocks2.append({"type": "header","text": {"type": "plain_text", "text": "Do you like any of them?\n React with the respective emoji"}})
     blocks2.append({"type": "divider"})
 
     response = client.chat_postMessage(channel=ChannelName, blocks=blocks1)
