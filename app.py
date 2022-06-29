@@ -183,21 +183,23 @@ def ThreadMessage():
 		"type": "section",
 		"text": {
 			"type": "mrkdwn",
-			"text": "If you are staying in the office, where do you want to lunch?\
-            :one: rooftop\
-            :two: lounge terrace\
-            :three: lounge\
-            :four: office 411 terrace\
-            :five: kitchen area 3 floor\
+			"text": "If you are staying in the office, where do you want to lunch?\n \
+            :one: rooftop\n \
+            :two: lounge terrace\n \
+            :three: lounge\n \
+            :four: office 411 terrace\n \
+            :five: kitchen area 3 floor\n \
             :six: relax area 2 floor"
 		}
     })
 
     response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
-    #print(str(result = client.conversations_history(
-    #    channel="C03M32EE1K2",
-    #    inclusive=True,
-    #    oldest=thread_token,
-    #    limit=1
-    #)))
+    result = client.conversations_history(
+        channel="C03M32EE1K2",
+        inclusive=True,
+        oldest=thread_token,
+        limit=1
+    )
+    print(result)
+    print(result['latest_reply'])
     return "GET"
