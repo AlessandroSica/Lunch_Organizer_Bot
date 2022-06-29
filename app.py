@@ -183,57 +183,15 @@ def ThreadMessage():
 		"type": "section",
 		"text": {
 			"type": "mrkdwn",
-			"text": "If you are staying in the office, where do you want to lunch?"
-		},
-		"accessory": {
-			"type": "radio_buttons",
-			"options": [
-				{
-					"text": {
-						"type": "mrkdwn",
-						"text": "*rooftop*"
-					},
-					"value": "value-0"
-				},
-				{
-					"text": {
-						"type": "mrkdwn",
-						"text": "*lounge terrace*"
-					},
-					"value": "value-1"
-				},
-				{
-					"text": {
-						"type": "mrkdwn",
-						"text": "*lounge*"
-					},
-					"value": "value-2"
-				},
-                {
-					"text": {
-						"type": "mrkdwn",
-						"text": "*office 411 terrace*"
-					},
-					"value": "value-3"
-				},
-                {
-					"text": {
-						"type": "mrkdwn",
-						"text": "*kitchen area 3 floor*"
-					},
-					"value": "value-3"
-				},
-                {
-					"text": {
-						"type": "mrkdwn",
-						"text": "*relax area 2 floor*"
-					},
-					"value": "value-3"
-				}
-			],
-			"action_id": "checkboxes-action"
+			"text": "If you are staying in the office, where do you want to lunch?\
+            :one: rooftop\
+            :two: lounge terrace\
+            :three: lounge\
+            :four: office 411 terrace\
+            :five: kitchen area 3 floor\
+            :six: relax area 2 floor"
 		}
-	})
+    })
 
     response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
     #print(str(result = client.conversations_history(
