@@ -1,6 +1,7 @@
 
 import os
 from random import randint
+from this import d
 import pandas as pd
 from flask import Flask
 
@@ -10,21 +11,22 @@ from slack_sdk.webhook import WebhookClient
 token = os.getenv('TOKEN')
 client = WebClient(token)
 app = Flask(__name__)
+db_path = os.getenv('FILE_LUNCH')
 
-places_for_lunch_file = pd.read_csv(os.getenv('FILE_LUNCH'))
+try:
+    places_for_lunch_file = pd.read_csv(db_path)
+except:
+    places_for_lunch_file = pd.read_csv('ExampleLunchPlaces-info-Sheet1.csv')
+
 list_places = []
 for i in range(len(places_for_lunch_file)):
-
     for j in range(places_for_lunch_file.loc[i].at["Votes"]):
-
-        list_places += [places_for_lunch_file.loc[i].at["Name"]]
+        list_places.append(places_for_lunch_file.loc[i].at["Name"])
 
 def FormatHeaders(suggestion):
 
     for i in range(len(places_for_lunch_file)):
-
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
-
             return {
 			    "type": "header",
 			    "text": {
@@ -39,14 +41,12 @@ def FormatHeaders(suggestion):
 def FormatSuggestions(suggestion):
 
     for i in range(len(places_for_lunch_file)):
-
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
-
             return {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "{0}\n {1}{2}  -{3}​  -{4}​  -{5}\n {6}\n <{7}|Learn more...>\n"
+                    "text": "{0}\n {1}{2}  -{3}​  -{4}​  -{5}\n {6}\n `{7}`\n"
                     .format(
                         places_for_lunch_file.loc[i].at["Description"], 
                         places_for_lunch_file.loc[i].at["Vegan "], 
@@ -65,34 +65,20 @@ def FormatSuggestions(suggestion):
                 }
             }
 
-def getSuggestion():
-    suggestion = list_places[randint(0, len(list_places) - 1)]
-    suggestion_list = [suggestion]
+def getSuggestion(selection_num=3):
+    suggestion_list = []
+    real_selection_num = min(selection_num, len(places_for_lunch_file)) 
 
-    for i in range(2):
-        NotDifferent = True
-
-        while(NotDifferent):
-            suggestion = list_places[randint(0, len(list_places) - 1)]
-
-            for j in (suggestion_list):
-
-                if j == suggestion:
-                    suggestion = suggestion_list[-1]
-                    NotDifferent = True
-                else:
-                    NotDifferent = False
-
-        suggestion_list += [suggestion]
+    while(len(suggestion_list) < real_selection_num):
+        suggestion = list_places[randint(0, len(list_places) - 1)]
+        if suggestion not in suggestion_list:
+            suggestion_list.append(suggestion)
 
     return suggestion_list
     
 def ChoseEmoji(suggestion):
-
     for i in range(len(places_for_lunch_file)):
-        
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
-
             return places_for_lunch_file.loc[i].at["Emoji"]
 
 channel_name= os.getenv('CHANNEL_NAME')
@@ -127,15 +113,23 @@ def SendSuggestionLunch():
     blocks_2.append({"type": "divider"})
 
     suggestions = getSuggestion()
-    
-    for sug in suggestions:
 
+    for sug in suggestions:
         blocks_2.append(FormatHeaders(sug))
         blocks_2.append(FormatSuggestions(sug))
-        
-    emoji1 = ChoseEmoji(suggestions[0])
-    emoji2 = ChoseEmoji(suggestions[1])
-    emoji3 = ChoseEmoji(suggestions[2])
+
+    if len(places_for_lunch_file) == 1:
+        emoji1 = ChoseEmoji(suggestions[0])+" = 1"
+        emoji2 = ""
+        emoji3 = ""
+    elif len(places_for_lunch_file) == 2:
+        emoji1 = ChoseEmoji(suggestions[0])+" = 1"
+        emoji2 = ChoseEmoji(suggestions[1])+" = 2"
+        emoji3 = ""
+    else:
+        emoji1 = ChoseEmoji(suggestions[0])+" = 1"
+        emoji2 = ChoseEmoji(suggestions[1])+" = 2"
+        emoji3 = ChoseEmoji(suggestions[2])+" = 3"
 
     blocks_2.append({
         "type": "section",
@@ -156,7 +150,7 @@ def SendSuggestionLunch():
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "{0} = 1,  {1} = 2,  {2} = 3".format(emoji1, emoji2, emoji3)
+            "text": "{0} {1} {2}\n :stuck_out_tongue_winking_eye: = for me is the same!".format(emoji1, emoji2, emoji3)
         }
     })
     blocks_2.append({"type": "divider"})
@@ -193,13 +187,4 @@ def ThreadMessage():
 		}
     })
 
-    response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
-    result = client.conversations_history(
-        channel="C03M32EE1K2",
-        inclusive=True,
-        oldest=thread_token,
-        limit=1
-    )
-    print(result)
-    print(result['latest_reply'])
     return "GET"
