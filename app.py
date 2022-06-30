@@ -189,3 +189,62 @@ def ThreadMessage():
     response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
 
     return "GET"
+
+@app.route('/Result-Voting')
+def ResultVoteMessage():
+    blocks_4 = []
+
+    result = client.conversations_replies(
+        channel = "C03M32EE1K2",
+        inclusive = True,
+        ts = thread_token,
+        oldest = thread_token,
+        limit = 1
+    )
+
+    try: 
+        result['messages'][1]['reactions']
+    except:
+        return "GET"
+
+    list_answer = []
+
+    for i in range(len(result['messages'][1]['reactions'])):
+        list_answer += (result['messages'][1]['reactions'][i]['name'], )
+    print(list_answer)
+
+    place_list = []
+    place_checked = []
+    place = ""
+
+    for i in (list_answer):
+        if place not in place_checked:
+            place = i
+            vote = 0
+            for j in (list_answer):
+                if place == j:
+                    vote += 1
+            place_list += ((place, vote),)
+            place_checked += place
+    print(place_list)
+
+    highest_vote = 0
+    winner = ""
+
+    for i in place_list:
+        (place, vote) = i
+        if vote >= highest_vote:
+            highest_vote = vote
+            winner = place
+
+    blocks_4.append({
+        "type": "header",
+        "text": {
+            "type": "plain_text", 
+            "text": "We have a winner, the most voted message is: {0}".format(winner)
+        }
+    })
+
+    response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_4)
+
+    return "GET"
