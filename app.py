@@ -46,7 +46,7 @@ def FormatSuggestions(suggestion):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "{0}\n {1}{2}  -{3}​  -{4}​  -{5}\n {6}" #`{7}`
+                    "text": "{0}\n {1}{2}\n  -{3}​  -{4}​  -{5}\n {6}" #`{7}`
                     .format(
                         places_for_lunch_file.loc[i].at["Description"], 
                         places_for_lunch_file.loc[i].at["Vegan "], 
@@ -54,8 +54,7 @@ def FormatSuggestions(suggestion):
                         places_for_lunch_file.loc[i].at["Delivery"], 
                         places_for_lunch_file.loc[i].at["Take-Away"], 
                         places_for_lunch_file.loc[i].at["Distance"], 
-                        places_for_lunch_file.loc[i].at["Price range"], 
-                        #places_for_lunch_file.loc[i].at["Tripadvisor"]
+                        places_for_lunch_file.loc[i].at["Price range"], #places_for_lunch_file.loc[i].at["Tripadvisor"]
                     ),
                 },
                 "accessory": {
@@ -186,7 +185,7 @@ def ThreadMessage():
             :six: relax area 2 floor"
 		}
     })
-    
+
     response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
 
     return "GET"
