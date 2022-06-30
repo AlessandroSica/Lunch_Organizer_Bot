@@ -46,7 +46,7 @@ def FormatSuggestions(suggestion):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "{0}\n {1}{2}  -{3}​  -{4}​  -{5}\n {6}\n `{7}`\n"
+                    "text": "{0}\n {1}{2}  -{3}​  -{4}​  -{5}\n {6}\n" #`{7}`
                     .format(
                         places_for_lunch_file.loc[i].at["Description"], 
                         places_for_lunch_file.loc[i].at["Vegan "], 
@@ -55,7 +55,7 @@ def FormatSuggestions(suggestion):
                         places_for_lunch_file.loc[i].at["Take-Away"], 
                         places_for_lunch_file.loc[i].at["Distance"], 
                         places_for_lunch_file.loc[i].at["Price range"], 
-                        places_for_lunch_file.loc[i].at["Tripadvisor"]
+                        #places_for_lunch_file.loc[i].at["Tripadvisor"]
                     ),
                 },
                 "accessory": {
@@ -119,16 +119,16 @@ def SendSuggestionLunch():
         blocks_2.append(FormatSuggestions(sug))
 
     if len(places_for_lunch_file) == 1:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1"
+        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
         emoji2 = ""
         emoji3 = ""
     elif len(places_for_lunch_file) == 2:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1"
-        emoji2 = ChoseEmoji(suggestions[1])+" = 2"
+        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
+        emoji2 = ChoseEmoji(suggestions[1])+" = 2, "
         emoji3 = ""
     else:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1"
-        emoji2 = ChoseEmoji(suggestions[1])+" = 2"
+        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
+        emoji2 = ChoseEmoji(suggestions[1])+" = 2, "
         emoji3 = ChoseEmoji(suggestions[2])+" = 3"
 
     blocks_2.append({
