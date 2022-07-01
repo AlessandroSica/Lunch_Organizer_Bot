@@ -207,37 +207,20 @@ def ResultVoteMessage():
 
     for i in range(len(result['messages'][1]['reactions'])):
         if ":"+result['messages'][1]['reactions'][i]['name']+":" in list_emoji:
-            list_answer += [result['messages'][1]['reactions'][i]['name']]
+            list_answer += [(result['messages'][1]['reactions'][i]['name'], result['messages'][1]['reactions'][i]['count'])]
 
     if list_answer == []:
         return "GET"
 
-    place_list = []
-    place_checked = []
-    place = ""
-
-    for i in (list_answer):
-        if place not in place_checked:
-            place = i
-            vote = 0
-            for j in (list_answer):
-                if place == j:
-                    vote += 1
-            place_list += [(place, vote)]
-            place_checked += place
-
     highest_vote = 0
-
-    for i in place_list:
-        (place, vote) = i
-        if vote >= highest_vote:
-            highest_vote = vote
-    
     winners_emoji = []
 
-    for i in place_list:
+    for i in list_answer:
         (place, vote) = i
-        if vote == highest_vote:
+        if vote > highest_vote:
+            highest_vote = vote
+            winners_emoji = [place]
+        elif vote == highest_vote:
             winners_emoji += [place]
 
     winners_places = ""
