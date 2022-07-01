@@ -112,23 +112,14 @@ def SendSuggestionLunch():
     blocks_2.append({"type": "divider"})
 
     suggestions = getSuggestion()
+    emoji = ""
+    num_emoji=0
 
     for sug in suggestions:
+        num_emoji += 1
         blocks_2.append(FormatHeaders(sug))
         blocks_2.append(FormatSuggestions(sug))
-
-    if len(places_for_lunch_file) == 1:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
-        emoji2 = ""
-        emoji3 = ""
-    elif len(places_for_lunch_file) == 2:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
-        emoji2 = ChoseEmoji(suggestions[1])+" = 2, "
-        emoji3 = ""
-    else:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
-        emoji2 = ChoseEmoji(suggestions[1])+" = 2, "
-        emoji3 = ChoseEmoji(suggestions[2])+" = 3"
+        emoji += ChoseEmoji(sug)+" = "+str(num_emoji)+"    "
 
     blocks_2.append({
         "type": "section",
@@ -149,7 +140,7 @@ def SendSuggestionLunch():
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "{0} {1} {2}\n :stuck_out_tongue_winking_eye: = for me is the same!".format(emoji1, emoji2, emoji3)
+            "text": "{0}\n :stuck_out_tongue_winking_eye: = for me is the same!".format(emoji)
         }
     })
     blocks_2.append({"type": "divider"})
@@ -207,11 +198,20 @@ def ResultVoteMessage():
     except:
         return "GET"
 
+    list_emoji = []
+
+    for i in places_for_lunch_file["Emoji"]:
+        list_emoji += [i]
+    print(list_emoji)
+
     list_answer = []
 
     for i in range(len(result['messages'][1]['reactions'])):
-        list_answer += [result['messages'][1]['reactions'][i]['name']]
-    print(list_answer)
+        if ":"+result['messages'][1]['reactions'][i]['name']+":" in list_emoji:
+            list_answer += [result['messages'][1]['reactions'][i]['name']]
+
+    if list_answer == []:
+        return "GET"
 
     place_list = []
     place_checked = []
@@ -226,41 +226,33 @@ def ResultVoteMessage():
                     vote += 1
             place_list += [(place, vote)]
             place_checked += place
-    print(place_list)
 
     highest_vote = 0
-    winner = []
 
     for i in place_list:
         (place, vote) = i
         if vote >= highest_vote:
             highest_vote = vote
-            winner = [place]
     
-    winner = []
+    winners_emoji = []
+
     for i in place_list:
         (place, vote) = i
         if vote == highest_vote:
-            winner += [place]
+            winners_emoji += [place]
 
-    if len(winner) == 1:
-        winner1 = winner[0]
-        winner2 = ""
-        winner3 = ""
-    elif len(winner) == 2:
-        winner1 = winner[0]+" & "
-        winner2 = winner[1]
-        winner3 = ""
-    else:
-        winner1 = winner[0]+" & "
-        winner2 = winner[1]+" & "
-        winner3 = winner[2]
+    winners_places = ""
+
+    for i in winners_emoji:
+        for j in range(len(places_for_lunch_file["Emoji"])):
+            if ":"+i+":" == places_for_lunch_file.loc[j].at["Emoji"]:
+                winners_places += "- "+places_for_lunch_file.loc[j].at["Name"]+"\n"
 
     blocks_4.append({
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "We have a winner, the most voted message is: {0}{1}{2}".format(winner1,winner2,winner3)
+            "text": "We have a winner, the most voted restaurant is:\n {0}".format(winners_places)
         }
     })
 
