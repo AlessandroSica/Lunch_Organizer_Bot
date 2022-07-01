@@ -210,7 +210,7 @@ def ResultVoteMessage():
     list_answer = []
 
     for i in range(len(result['messages'][1]['reactions'])):
-        list_answer += (result['messages'][1]['reactions'][i]['name'], )
+        list_answer += [result['messages'][1]['reactions'][i]['name']]
     print(list_answer)
 
     place_list = []
@@ -224,24 +224,43 @@ def ResultVoteMessage():
             for j in (list_answer):
                 if place == j:
                     vote += 1
-            place_list += ((place, vote),)
+            place_list += [(place, vote)]
             place_checked += place
     print(place_list)
 
     highest_vote = 0
-    winner = ""
+    winner = []
 
     for i in place_list:
         (place, vote) = i
         if vote >= highest_vote:
             highest_vote = vote
-            winner = place
+            winner = [place]
+    
+    winner = []
+    for i in place_list:
+        (place, vote) = i
+        if vote == highest_vote:
+            winner += [place]
+
+    if len(winner) == 1:
+        winner1 = winner[0]
+        winner2 = ""
+        winner3 = ""
+    elif len(winner) == 2:
+        winner1 = winner[0]+" & "
+        winner2 = winner[1]
+        winner3 = ""
+    else:
+        winner1 = winner[0]+" & "
+        winner2 = winner[1]+" & "
+        winner3 = winner[2]
 
     blocks_4.append({
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "We have a winner, the most voted message is: {0}".format(winner)
+            "text": "We have a winner, the most voted message is: {0}{1}{2}".format(winner1,winner2,winner3)
         }
     })
 
