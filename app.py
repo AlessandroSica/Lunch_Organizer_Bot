@@ -133,7 +133,7 @@ def SendSuggestionLunch():
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "Do you like any of them?\n React with the respective emoji"
+            "text": "Do you like any of them?\n React with the respective emoji of any reastaurant you want"
         }
     })
     blocks_2.append({
@@ -202,7 +202,6 @@ def ResultVoteMessage():
 
     for i in places_for_lunch_file["Emoji"]:
         list_emoji += [i]
-    print(list_emoji)
 
     list_answer = []
 
