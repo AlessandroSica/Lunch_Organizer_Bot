@@ -5,7 +5,8 @@ The bot sends you a message at a specific time on Slack, where it ask you if you
 Then it also gives you three suggestion on possible resturants to chose from, that are randomly chosen from a list. <br>
 Then you can choose and see what the others chose by reacting to the message with the respective emoji of the restaurant. <br>
 
-###Preview: <br>
+## Preview: <br>
+
 ![BotMessage](https://user-images.githubusercontent.com/85867861/176443233-96b2d252-500b-4d93-9874-ec7d24fc9c26.png)
 
 ## How to activate the bot:<br>
