@@ -24,6 +24,8 @@ Use `ExampleLunchPlaces-info-Sheet1.csv` as a base for your file. <br>
 
 After that you need to create a file (I chose .env and I made git ignore it) where you need to create a variable containing your bot token, 
 one containing the channel ID of where you want to send the message, and the last one with the name of the file where there are the suggestions for the lunch. <br>
+Example .env file: <br>
+![image](https://user-images.githubusercontent.com/85867861/176877424-1cd4fd0b-8b6d-4fd7-be66-bcdf73b01d9a.png)
 
 Then you can run this command in the folder of your project to start a local server: <br>
 `python -m run flask` <br>
