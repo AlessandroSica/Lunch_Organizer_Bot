@@ -252,7 +252,7 @@ def slack_app():
             channels = channel_name,
             title = "List restaurants suggestions"
         )
-        return   ""
+        return   "List restaurants suggestions"
     else:
         return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
             "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range","Image"]]) + "\n```"
