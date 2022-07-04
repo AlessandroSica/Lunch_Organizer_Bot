@@ -7,8 +7,8 @@ Then you can choose and see what the others chose by reacting to the message wit
 
 ## Preview: <br>
 
-![image](https://user-images.githubusercontent.com/85867861/176915962-52fadf9f-5e35-4910-a339-5daed8bc6730.png)
-![image](https://user-images.githubusercontent.com/85867861/176916077-0e141cfa-4c83-4760-8be8-eb229d5a49e0.png)
+![image](https://user-images.githubusercontent.com/85867861/177178620-c37ad306-7062-496e-a480-dbbc6ec7a6bb.png)
+![image](https://user-images.githubusercontent.com/85867861/177178794-f7705067-31de-4b62-bd39-ae79d672f813.png)
 
 ## How to activate the bot:<br>
 
