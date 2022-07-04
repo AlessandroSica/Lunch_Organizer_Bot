@@ -140,4 +140,5 @@ If you want now you can do a reboot by typing: <br>
 After that your Raspberry Pi should be ready to go! When you want to use it you just need to plug it in.
 And if you want connect again to it just type the first command we typed before to connect: <br>
 `ssh pi@67.543.345.65` <br>
-Just remember to use the right IP adress.
+Just remember to use the right IP adress, or if it is note renamed you can also write: <br>
+`ssh pi@raspberrypi.local` <br>
