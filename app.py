@@ -177,7 +177,7 @@ def ThreadMessage():
 		}
     })
 
-    response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
+    response = client.chat_postMessage(channel = channel_name, blocks = blocks_3)
 
     return "GET"
 
