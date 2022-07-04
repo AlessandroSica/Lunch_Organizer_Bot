@@ -4,6 +4,7 @@ from random import randint
 from this import d
 import pandas as pd
 from flask import Flask
+from tabulate import tabulate
 
 from slack_sdk.web import WebClient
 from slack_sdk.webhook import WebhookClient
@@ -12,6 +13,8 @@ token = os.getenv('TOKEN')
 client = WebClient(token)
 app = Flask(__name__)
 db_path = os.getenv('FILE_LUNCH')
+url = os.getenv('URL_NGROK')
+webhook = WebhookClient(url)
 
 try:
     places_for_lunch_file = pd.read_csv(db_path)
@@ -49,8 +52,8 @@ def FormatSuggestions(suggestion):
                     "text": "{0}\n {1}{2}\n  -{3}​  -{4}​  -{5}\n {6}" #`{7}`
                     .format(
                         places_for_lunch_file.loc[i].at["Description"], 
-                        places_for_lunch_file.loc[i].at["Vegan "], 
-                        places_for_lunch_file.loc[i].at["Vegeterian"], 
+                        places_for_lunch_file.loc[i].at["Vegan"], 
+                        places_for_lunch_file.loc[i].at["Vegetarian"], 
                         places_for_lunch_file.loc[i].at["Delivery"], 
                         places_for_lunch_file.loc[i].at["Take-Away"], 
                         places_for_lunch_file.loc[i].at["Distance"], 
@@ -92,43 +95,34 @@ def SendSuggestionLunch():
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "Have you already decided where to lunch?"
+            "text": "Are you already set for lunch?"
         }
     })
     blocks_1.append({
         "type": "section",
         "text": {
             "type": "plain_text", 
-            "text": ":sunglasses: = Yes, I have already decided\n :dizzy_face: = No, what do you offer me?"
+            "text": ":gatto-sunglasses: = Yes, I am fine\n :moschi: = No, what do you offer me?"
         }
     })
     blocks_2.append({
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "Here there are the suggestion of the day:"
+            "text": "Here there are the suggestions of the day:"
         }
     })
     blocks_2.append({"type": "divider"})
 
     suggestions = getSuggestion()
+    emoji = ""
+    num_emoji=0
 
     for sug in suggestions:
+        num_emoji += 1
         blocks_2.append(FormatHeaders(sug))
         blocks_2.append(FormatSuggestions(sug))
-
-    if len(places_for_lunch_file) == 1:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
-        emoji2 = ""
-        emoji3 = ""
-    elif len(places_for_lunch_file) == 2:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
-        emoji2 = ChoseEmoji(suggestions[1])+" = 2, "
-        emoji3 = ""
-    else:
-        emoji1 = ChoseEmoji(suggestions[0])+" = 1, "
-        emoji2 = ChoseEmoji(suggestions[1])+" = 2, "
-        emoji3 = ChoseEmoji(suggestions[2])+" = 3"
+        emoji += ChoseEmoji(sug)+" = "+str(num_emoji)+"    "
 
     blocks_2.append({
         "type": "section",
@@ -142,14 +136,14 @@ def SendSuggestionLunch():
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "Do you like any of them?\n React with the respective emoji"
+            "text": "Do you like any of them?\n React with the respective emoji of any reastaurant you want"
         }
     })
     blocks_2.append({
         "type": "header",
         "text": {
             "type": "plain_text", 
-            "text": "{0} {1} {2}\n :stuck_out_tongue_winking_eye: = for me is the same!".format(emoji1, emoji2, emoji3)
+            "text": "{0}\n :stuck_out_tongue_winking_eye: = for me is the same!".format(emoji)
         }
     })
     blocks_2.append({"type": "divider"})
@@ -189,3 +183,69 @@ def ThreadMessage():
     response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_3)
 
     return "GET"
+
+@app.route('/Result-Voting')
+def ResultVoteMessage():
+    blocks_4 = []
+
+    result = client.conversations_replies(
+        channel = "C03M32EE1K2",
+        inclusive = True,
+        ts = thread_token,
+        oldest = thread_token,
+        limit = 1
+    )
+
+    try: 
+        result['messages'][1]['reactions']
+    except:
+        return "GET"
+
+    list_emoji = []
+
+    for i in places_for_lunch_file["Emoji"]:
+        list_emoji += [i]
+
+    list_answer = []
+
+    for i in range(len(result['messages'][1]['reactions'])):
+        if ":"+result['messages'][1]['reactions'][i]['name']+":" in list_emoji:
+            list_answer += [(result['messages'][1]['reactions'][i]['name'], result['messages'][1]['reactions'][i]['count'])]
+
+    if list_answer == []:
+        return "GET"
+
+    highest_vote = 0
+    winners_emoji = []
+
+    for i in list_answer:
+        (place, vote) = i
+        if vote > highest_vote:
+            highest_vote = vote
+            winners_emoji = [place]
+        elif vote == highest_vote:
+            winners_emoji += [place]
+
+    winners_places = ""
+
+    for i in winners_emoji:
+        for j in range(len(places_for_lunch_file["Emoji"])):
+            if ":"+i+":" == places_for_lunch_file.loc[j].at["Emoji"]:
+                winners_places += "- "+places_for_lunch_file.loc[j].at["Name"]+"\n"
+
+    blocks_4.append({
+        "type": "header",
+        "text": {
+            "type": "plain_text", 
+            "text": "We have a winner, the most voted restaurant is:\n {0}".format(winners_places)
+        }
+    })
+
+    response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_4)
+
+    return "GET"
+
+@app.route("/", methods=["POST"])
+def slack_app():
+    return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
+            "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range","Image"]]) + "\n```"
