@@ -12,6 +12,8 @@ token = os.getenv('TOKEN')
 client = WebClient(token)
 app = Flask(__name__)
 db_path = os.getenv('FILE_LUNCH')
+url = os.getenv('URL_NGROK')
+webhook = WebhookClient(url)
 channel_name= os.getenv('CHANNEL_NAME')
 channel_id= os.getenv('CHANNEL_ID')
 
