@@ -14,6 +14,8 @@ app = Flask(__name__)
 db_path = os.getenv('FILE_LUNCH')
 url = os.getenv('URL_NGROK')
 webhook = WebhookClient(url)
+channel_name= os.getenv('CHANNEL_NAME')
+channel_id= os.getenv('CHANNEL_ID')
 
 try:
     places_for_lunch_file = pd.read_csv(db_path)
@@ -81,8 +83,6 @@ def ChoseEmoji(suggestion):
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return places_for_lunch_file.loc[i].at["Emoji"]
-
-channel_name= os.getenv('CHANNEL_NAME')
 
 @app.route('/')
 def SendSuggestionLunch():
@@ -188,7 +188,7 @@ def ResultVoteMessage():
     blocks_4 = []
 
     result = client.conversations_replies(
-        channel = "C03M32EE1K2",
+        channel = channel_id,
         inclusive = True,
         ts = thread_token,
         oldest = thread_token,
