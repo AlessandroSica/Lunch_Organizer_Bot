@@ -3,8 +3,7 @@ import os
 from random import randint
 from this import d
 import pandas as pd
-from flask import Flask
-from tabulate import tabulate
+from flask import Flask, request
 
 from slack_sdk.web import WebClient
 from slack_sdk.webhook import WebhookClient
@@ -247,5 +246,13 @@ def ResultVoteMessage():
 
 @app.route("/", methods=["POST"])
 def slack_app():
-    return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
+    if request.form["text"] == "raw":
+        response = client.files_upload(
+            file = db_path,
+            channels = channel_name,
+            title = "List restaurants suggestions"
+        )
+        return   ""
+    else:
+        return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
             "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range","Image"]]) + "\n```"
