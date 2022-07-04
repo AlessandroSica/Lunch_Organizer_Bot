@@ -249,10 +249,10 @@ def slack_app():
     if request.form["text"] == "raw":
         response = client.files_upload(
             file = db_path,
-            channels = channel_name,
+            channels = request.form["user_id"],
             title = "List restaurants suggestions"
         )
-        return   "List restaurants suggestions"
+        return   """Check out your conversation with the bot to see the full "suggested restaurants" file"""
     else:
         return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
             "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range","Image"]]) + "\n```"
