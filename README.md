@@ -50,8 +50,11 @@ See [the official documentation](https://www.raspberrypi.com/documentation/compu
 
 After you configure it you need to know its IP adress (check again the previous link). <br>
 So after you pluged-in the Raspberry Pi, you attached it to the lan, or gave it access to the wifi network and if the device is near your computer, only then you can run the following code on your terminal, with the respectivee IP adress: <br>
-example
+example <br>
 `ssh pi@67.543.345.65` <br>
+or if it is note renamed <br>
+`ssh pi@raspberrypi.local` <br>
+The first time it will ask you if you are sure and you want to continue, you can answer "yes". <br>
 Then it will ask you to input a password, in this case the default one is `raspberry`, later it is suggested to change it for more security. <br>
 
 After that you need to install python, making sure you install the right version of it: 3 or newer, you can do it by typing: <br>
