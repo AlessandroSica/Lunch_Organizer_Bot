@@ -1,6 +1,7 @@
 
 import os
 from random import randint
+from secrets import randbelow
 from this import d
 import pandas as pd
 from flask import Flask, request
@@ -17,19 +18,26 @@ webhook = WebhookClient(url)
 channel_name= os.getenv('CHANNEL_NAME')
 channel_id= os.getenv('CHANNEL_ID')
 
-try:
-    places_for_lunch_file = pd.read_csv(db_path)
-except:
-    db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
-    places_for_lunch_file = pd.read_csv(db_path)
+def ReadRestaurantsFile():
+    global places_for_lunch_file
+    try:
+        places_for_lunch_file = pd.read_csv(db_path)
+    except:
+        db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
+        places_for_lunch_file = pd.read_csv(db_path)
 
-list_places = []
-for i in range(len(places_for_lunch_file)):
-    for j in range(places_for_lunch_file.loc[i].at["Votes"]):
-        list_places.append(places_for_lunch_file.loc[i].at["Name"])
+ReadRestaurantsFile()
+
+def ListPlaces():
+    global list_places
+    list_places = []
+    for i in range(len(places_for_lunch_file)):
+        for j in range(places_for_lunch_file.loc[i].at["Votes"]):
+            list_places.append(places_for_lunch_file.loc[i].at["Name"])
+
+ListPlaces()
 
 def FormatHeaders(suggestion):
-
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return {
@@ -44,7 +52,6 @@ def FormatHeaders(suggestion):
 		    }
 
 def FormatSuggestions(suggestion):
-
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return {
@@ -254,7 +261,7 @@ def ResultVoteMessage():
 
     return "GET"
 
-@app.route("/", methods=["POST"])
+@app.route("/list_lunch_places", methods=["POST"])
 def CommandShowFile():
     if request.form["text"] == "raw":
         response = client.files_upload(
@@ -266,3 +273,26 @@ def CommandShowFile():
     else:
         return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
             "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range","Image"]]) + "\n```"
+
+@app.route("/remove_row", methods=["POST"])
+def CommandRemoveRowFile():
+    global places_for_lunch_file, db_path
+
+    selected_row = int(request.form["text"])
+    lines = []
+
+    if selected_row > -1 and selected_row <= len(places_for_lunch_file):
+        with open(db_path, 'r', encoding='utf-8') as fp:
+            lines = fp.readlines()
+
+        with open(db_path, 'w', encoding='utf-8') as fp:
+            for number, line in enumerate(lines):
+                if number != selected_row:
+                    fp.write(line)
+
+        ReadRestaurantsFile()
+        ListPlaces()
+
+        return """Row {0} was removed from the "suggested restaurants" file""".format(selected_row)
+    else:
+        return "Wrong Input"
