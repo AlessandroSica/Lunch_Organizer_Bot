@@ -19,7 +19,7 @@ channel_name= os.getenv('CHANNEL_NAME')
 channel_id= os.getenv('CHANNEL_ID')
 
 def ReadRestaurantsFile():
-    global places_for_lunch_file
+    global places_for_lunch_file, db_path
     try:
         places_for_lunch_file = pd.read_csv(db_path)
     except:
@@ -296,3 +296,37 @@ def CommandRemoveRowFile():
         return """Row {0} was removed from the "suggested restaurants" file""".format(selected_row)
     else:
         return "Wrong Input"
+
+@app.route("/add_row", methods=["POST"])
+def CommandAddRowFile():
+
+    letter_pos = 0
+    last_letter_pos = 0
+    input_list = []
+    freeze = False
+    answer = request.form["text"]+","
+
+    for i in answer:
+        if i == '"' and freeze == False:
+            freeze = True
+        elif i == '"' and freeze == True:
+            freeze = False
+        elif i == "," and freeze == False:
+            input_list += [request.form["text"][last_letter_pos:letter_pos]]
+            last_letter_pos = letter_pos + 1
+        letter_pos +=1
+
+    print(input_list)
+
+    accepted = True
+    if accepted:
+        f = open(db_path, 'a', encoding='utf-8')
+        f.write("\n"+request.form["text"])
+        f.close()
+
+        ReadRestaurantsFile()
+        ListPlaces()
+
+        return """ "{0}" Added to the "suggested restaurants" file""".format(request.form["text"])
+    else:
+        return """Element provided not in the right format. Try to watch the "suggested restaurants" file as an example"""
