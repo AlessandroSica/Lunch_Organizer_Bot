@@ -187,6 +187,14 @@ def PlaceMessage():
 def ResultVoteMessage():
     blocks_4 = []
 
+    blocks_4.append({
+        "type": "header",
+        "text": {
+            "type": "plain_text", 
+            "text": "It is time to order your lunch!"
+        }
+    })
+
     result = client.conversations_replies(
         channel = channel_id,
         inclusive = True,
@@ -198,6 +206,7 @@ def ResultVoteMessage():
     try: 
         result['messages'][1]['reactions']
     except:
+        response = client.chat_postMessage(channel = channel_name, thread_ts = thread_token, blocks = blocks_4)
         return "GET"
 
     list_emoji = []
