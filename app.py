@@ -20,7 +20,8 @@ channel_id= os.getenv('CHANNEL_ID')
 try:
     places_for_lunch_file = pd.read_csv(db_path)
 except:
-    places_for_lunch_file = pd.read_csv('ExampleLunchPlaces-info-Sheet1.csv')
+    db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
+    places_for_lunch_file = pd.read_csv(db_path)
 
 list_places = []
 for i in range(len(places_for_lunch_file)):
