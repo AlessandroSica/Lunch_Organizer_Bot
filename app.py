@@ -18,19 +18,22 @@ webhook = WebhookClient(url)
 channel_name= os.getenv('CHANNEL_NAME')
 channel_id= os.getenv('CHANNEL_ID')
 
-try:
-    places_for_lunch_file = pd.read_csv(db_path)
-except:
-    db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
-    places_for_lunch_file = pd.read_csv(db_path)
+def ReadRestaurantsFile():
+    global places_for_lunch_file
+    try:
+        places_for_lunch_file = pd.read_csv(db_path)
+    except:
+        db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
+        places_for_lunch_file = pd.read_csv(db_path)
 
-list_places = []
-for i in range(len(places_for_lunch_file)):
-    for j in range(places_for_lunch_file.loc[i].at["Votes"]):
-        list_places.append(places_for_lunch_file.loc[i].at["Name"])
+def ListPlaces():
+    global list_places
+    list_places = []
+    for i in range(len(places_for_lunch_file)):
+        for j in range(places_for_lunch_file.loc[i].at["Votes"]):
+            list_places.append(places_for_lunch_file.loc[i].at["Name"])
 
 def FormatHeaders(suggestion):
-
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return {
@@ -45,7 +48,6 @@ def FormatHeaders(suggestion):
 		    }
 
 def FormatSuggestions(suggestion):
-
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return {
@@ -91,6 +93,9 @@ def SendSuggestionLunch():
     global thread_token
     blocks_1 = []
     blocks_2 = []
+
+    ReadRestaurantsFile()
+    ListPlaces()
 
     blocks_1.append({
         "type": "header",
@@ -284,11 +289,7 @@ def CommandRemoveRowFile():
                 if number != selected_row:
                     fp.write(line)
 
-        try:
-            places_for_lunch_file = pd.read_csv(db_path)
-        except:
-            db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
-            places_for_lunch_file = pd.read_csv(db_path)
+        ReadRestaurantsFile()
 
         return """Row {0} was removed from the "suggested restaurants" file""".format(selected_row)
     else:
