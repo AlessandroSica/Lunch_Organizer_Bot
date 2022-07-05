@@ -26,12 +26,16 @@ def ReadRestaurantsFile():
         db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
         places_for_lunch_file = pd.read_csv(db_path)
 
+ReadRestaurantsFile()
+
 def ListPlaces():
     global list_places
     list_places = []
     for i in range(len(places_for_lunch_file)):
         for j in range(places_for_lunch_file.loc[i].at["Votes"]):
             list_places.append(places_for_lunch_file.loc[i].at["Name"])
+
+ListPlaces()
 
 def FormatHeaders(suggestion):
     for i in range(len(places_for_lunch_file)):
@@ -93,9 +97,6 @@ def SendSuggestionLunch():
     global thread_token
     blocks_1 = []
     blocks_2 = []
-
-    ReadRestaurantsFile()
-    ListPlaces()
 
     blocks_1.append({
         "type": "header",
@@ -290,6 +291,7 @@ def CommandRemoveRowFile():
                     fp.write(line)
 
         ReadRestaurantsFile()
+        ListPlaces()
 
         return """Row {0} was removed from the "suggested restaurants" file""".format(selected_row)
     else:
