@@ -6,9 +6,10 @@ Then it also gives you three suggestions on possible restaurants to chose from, 
 Then you can choose and see what the others chose by reacting to the message with the respective emoji of the restaurant. <br>
 
 ## Preview: <br>
-
+![image](https://user-images.githubusercontent.com/85867861/177526138-c0db6196-2760-45c6-94fa-c237f7dfb0ef.png)
+##
 ![image](https://user-images.githubusercontent.com/85867861/177178620-c37ad306-7062-496e-a480-dbbc6ec7a6bb.png)
-![image](https://user-images.githubusercontent.com/85867861/177178794-f7705067-31de-4b62-bd39-ae79d672f813.png)
+![![MessageBot](https://user-images.githubusercontent.com/85867861/177526754-c4935a43-2af6-4427-a90e-5de28e8922a8.png)
 
 ## How to activate the bot:<br>
 
