@@ -7,13 +7,10 @@ import pandas as pd
 from flask import Flask, request
 
 from slack_sdk.web import WebClient
-from slack_sdk.webhook import WebhookClient
 
 token = os.getenv('TOKEN')
 client = WebClient(token)
 app = Flask(__name__)
-url = os.getenv('URL_NGROK')
-webhook = WebhookClient(url)
 channel_name= os.getenv('CHANNEL_NAME')
 channel_id= os.getenv('CHANNEL_ID')
 
