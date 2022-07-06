@@ -12,32 +12,32 @@ from slack_sdk.webhook import WebhookClient
 token = os.getenv('TOKEN')
 client = WebClient(token)
 app = Flask(__name__)
-db_path = os.getenv('FILE_LUNCH')
 url = os.getenv('URL_NGROK')
 webhook = WebhookClient(url)
 channel_name= os.getenv('CHANNEL_NAME')
 channel_id= os.getenv('CHANNEL_ID')
 
 def ReadRestaurantsFile():
-    global places_for_lunch_file, db_path
+    path = GetRestaurantsPath()
+    return pd.read_csv(path)
+
+def GetRestaurantsPath():
     try:
-        places_for_lunch_file = pd.read_csv(db_path)
+        db_path = os.getenv('FILE_LUNCH_PLACES')
+        pd.read_csv(db_path)
+        return db_path
     except:
-        db_path = 'ExampleLunchPlaces-info-Sheet1.csv'
-        places_for_lunch_file = pd.read_csv(db_path)
+        return 'ExampleLunchPlaces-info-Sheet1.csv'
 
-ReadRestaurantsFile()
-
-def ListPlaces():
-    global list_places
+def GetListPlaces(places_for_lunch_file):
     list_places = []
     for i in range(len(places_for_lunch_file)):
         for j in range(places_for_lunch_file.loc[i].at["Votes"]):
             list_places.append(places_for_lunch_file.loc[i].at["Name"])
 
-ListPlaces()
+    return list_places
 
-def FormatHeaders(suggestion):
+def FormatHeaders(suggestion, places_for_lunch_file):
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return {
@@ -51,7 +51,7 @@ def FormatHeaders(suggestion):
 			    }
 		    }
 
-def FormatSuggestions(suggestion):
+def FormatSuggestions(suggestion, places_for_lunch_file):
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return {
@@ -76,7 +76,7 @@ def FormatSuggestions(suggestion):
                 }
             }
 
-def getSuggestion(selection_num=3):
+def getSuggestion(list_places, places_for_lunch_file, selection_num=3):
     suggestion_list = []
     real_selection_num = min(selection_num, len(places_for_lunch_file)) 
 
@@ -87,7 +87,7 @@ def getSuggestion(selection_num=3):
 
     return suggestion_list
     
-def ChoseEmoji(suggestion):
+def ChoseEmoji(suggestion, places_for_lunch_file):
     for i in range(len(places_for_lunch_file)):
         if suggestion == places_for_lunch_file.loc[i].at["Name"]:
             return places_for_lunch_file.loc[i].at["Emoji"]
@@ -121,15 +121,17 @@ def SendSuggestionLunch():
     })
     blocks_2.append({"type": "divider"})
 
-    suggestions = getSuggestion()
+    restaurants_file = ReadRestaurantsFile()
+    list_places = GetListPlaces(restaurants_file)
+    suggestions = getSuggestion(list_places, restaurants_file)
     emoji = ""
     num_emoji=0
 
     for sug in suggestions:
         num_emoji += 1
-        blocks_2.append(FormatHeaders(sug))
-        blocks_2.append(FormatSuggestions(sug))
-        emoji += ChoseEmoji(sug)+" = "+str(num_emoji)+"    "
+        blocks_2.append(FormatHeaders(sug, restaurants_file))
+        blocks_2.append(FormatSuggestions(sug, restaurants_file))
+        emoji += ChoseEmoji(sug, restaurants_file)+" = "+str(num_emoji)+"    "
 
     blocks_2.append({
         "type": "section",
@@ -219,6 +221,8 @@ def ResultVoteMessage():
 
     list_emoji = []
 
+    places_for_lunch_file = ReadRestaurantsFile()   
+
     for i in places_for_lunch_file["Emoji"]:
         list_emoji += [i]
 
@@ -265,23 +269,25 @@ def ResultVoteMessage():
 def CommandShowFile():
     if request.form["text"] == "raw":
         response = client.files_upload(
-            file = db_path,
+            file = GetRestaurantsPath(),
             channels = request.form["user_id"],
             title = "List restaurants suggestions"
         )
         return   """Check out your conversation with the bot to see the full "suggested restaurants" file"""
     else:
+        places_for_lunch_file = ReadRestaurantsFile()
         return   "```\n" + str(places_for_lunch_file[["Name", "Emoji", "Votes", "Description", "Vegan", "Vegetarian"]]) + "\n```" + "\n" \
-            "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range","Image"]]) + "\n```"
+            "```\n" + str(places_for_lunch_file[["Delivery","Take-Away","Distance","Price range"]]) + "\n```" + "\n" \
+            "```\n" + str(places_for_lunch_file[["Image"]]) + "\n```"
 
 @app.route("/remove_row", methods=["POST"])
 def CommandRemoveRowFile():
-    global places_for_lunch_file, db_path
-
+    db_path = GetRestaurantsPath()
+    places_for_lunch_file = ReadRestaurantsFile()
     selected_row = int(request.form["text"])
     lines = []
 
-    if selected_row > -1 and selected_row <= len(places_for_lunch_file):
+    if selected_row > -1 and selected_row < len(places_for_lunch_file):
         with open(db_path, 'r', encoding='utf-8') as fp:
             lines = fp.readlines()
 
@@ -289,9 +295,6 @@ def CommandRemoveRowFile():
             for number, line in enumerate(lines):
                 if number != selected_row:
                     fp.write(line)
-
-        ReadRestaurantsFile()
-        ListPlaces()
 
         return """Row {0} was removed from the "suggested restaurants" file""".format(selected_row)
     else:
@@ -316,17 +319,33 @@ def CommandAddRowFile():
             last_letter_pos = letter_pos + 1
         letter_pos +=1
 
-    print(input_list)
-
-    accepted = True
-    if accepted:
-        f = open(db_path, 'a', encoding='utf-8')
+    if (len(input_list) == 11 and
+        type(input_list[0]) == str and 
+        input_list[1][0] == ":" and
+        input_list[1][-1:] == ":" and
+        input_list[2].isnumeric() == True and
+        type(input_list[3]) == str and
+        input_list[3][0] == '"' and
+        input_list[3][-1:] == '"' and 
+        (input_list[4] == ":seedling:" or input_list[4].isspace() == True) and
+        (input_list[5] == ":carrot:" or input_list[5].isspace() == True) and
+        (input_list[6] == "Delivery: :white_check_mark:" or input_list[6] == "Delivery: :x:") and
+        (input_list[7] == "Take-Away: :white_check_mark:" or input_list[6] == "Take-Away: :x:") and
+        ((input_list[8][:10] == 'Distance: ' and
+        input_list[8][10].isnumeric() == True and
+        input_list[8][-2:] == ' m') or 
+        input_list[8] == "Distance: \\") and
+        input_list[9][:13] == 'Price range: ' and
+        input_list[9][13].isnumeric() == True and
+        input_list[9][-1:] == "€" and 
+        input_list[10][:8] == 'https://' and
+        len(input_list[10]) > 8
+        ):
+    
+        f = open(GetRestaurantsPath(), 'a', encoding='utf-8')
         f.write("\n"+request.form["text"])
         f.close()
 
-        ReadRestaurantsFile()
-        ListPlaces()
-
-        return """ "{0}" Added to the "suggested restaurants" file""".format(request.form["text"])
+        return """ "{0}"\n was added to the file containing the suggested restaurants""".format(request.form["text"])
     else:
-        return """Element provided not in the right format. Try to watch the "suggested restaurants" file as an example"""
+        return "Element provided not in the right format. Try to watch the file containing the suggested restaurants as an example"
