@@ -4,10 +4,15 @@ This bot allows you to organize your lunch with your colleagues. It is coded in 
 The bot sends you a message at a specific time on Slack, where it asks you if you have already decided where to lunch. <br>
 Then it also gives you three suggestions on possible restaurants to chose from, that are randomly chosen from a list. <br>
 Then you can choose and see what the others chose by reacting to the message with the respective emoji of the restaurant. <br>
+After that the bot with another messageto will remind you to order your lunch, and it will also say which was the restaurant with the most reactions. <br>
+Then it will send a final message where it suggests you to go and grab food, and ask you where you would like to lunch. You can answer by reacting with the respective number of the place you want, which you can choose between the list of option shown. <br>
+There are also slash commands that can be used to see the file containing the restaurants suggestion, to add a new row to it or to remove an already existing one. <br>
 
 ## Preview: <br>
+channel: <br>
 ![image](https://user-images.githubusercontent.com/85867861/177526138-c0db6196-2760-45c6-94fa-c237f7dfb0ef.png)
 ##
+tread:  <br>
 ![image](https://user-images.githubusercontent.com/85867861/177178620-c37ad306-7062-496e-a480-dbbc6ec7a6bb.png)
 ![![MessageBot](https://user-images.githubusercontent.com/85867861/177526754-c4935a43-2af6-4427-a90e-5de28e8922a8.png)
 
@@ -31,6 +36,7 @@ Example .env file: <br>
 ```
 TOKEN=kygkgchgckyc-976597665858545fkykgckl-xbivku
 CHANNEL_NAME=channel_name
+CHANNEL_ID=G5UDHEJSB4
 FILE_LUNCH=file_name.csv
 ```
 
@@ -40,7 +46,37 @@ Then you can run this command in the folder of your project to start a local ser
 And then by refreshing the page of the local server on your browser, which will be named: <br>
 `localhost:5000` <br>
 (where the number after the colon is the port that is specified when you run the previous command) <br>
-You will then get a message with three restaurant suggestions on the slack channel you specified! ;)
+You will then get a message, in the channel you specified, that ask you if you are already set for lunch or not, and here you can answer with two emoji to say if you are fine or not. <br>
+![image](https://user-images.githubusercontent.com/85867861/177570151-dc474777-58df-4392-903a-70613230194f.png)
+<br>
+<br>
+Then with the same message in the thread you will get three restaurant suggestions which you can vote for by reacting with the respective emoji of the restaurants suggested or of any restaurant present in your file containig all the restaurants info. <br>
+![image](https://user-images.githubusercontent.com/85867861/177570309-13339ad0-07ae-40af-bda8-754257c6a26f.png)
+<br>
+<br>
+Instead refresh the page: <br>
+`localhost:5000/Result-Voting` <br>
+You will get a second message in the thread of the message before that will remeber you to order your lunch and it will also tell you which was the restaurant with the most reactions. <br>
+![image](https://user-images.githubusercontent.com/85867861/177568321-7453afc9-6154-4594-8d8b-862ab9d247ff.png)
+<br>
+<br>
+And if you refresh the page: <br>
+`localhost:5000/Place-Message` <br>
+Yuo will receive the last message, in the cahannel this time, where the bot will tell you to go and grab food and it will also ask you where do you want to lunch. You can answer by reacting with the respective number of the place you want, which you can choose between the list of option shown. <br> 
+![image](https://user-images.githubusercontent.com/85867861/177568493-02c8c6ae-fffb-4af1-b467-3d4155e429bf.png)
+<br>
+<br>
+There are also slash commands. <br>
+To create a slash command you have to go to [this link](https://api.slack.com/apps) and create them following the instruction given (try to be as brief as possible in yor descriptions of the commands or they won't be fully readable). <br>
+Then in order to use them you first need to create a server. In order to do this I used [ngrok](https://ngrok.com/docs/getting-started). <br>
+In order to activate it in local you first need to install it, which you can do it from the terminal by typing: <br>
+
+`/list_lunch_places` <br>
+This command allows you to see a table containing all the info about the restaurants that are in the file with all the restaurants suggestions. And if you type "raw" after the command it will send you the raw file in the direct chat you have with the bot. <br>
+`/add_row` <br>
+Then this command will allow you to add a new row to the file with all the restaurants suggestions. The bot will first check if the information provided are in the right format. If they aren't it will tell you to put them in the right format (you can see the actual file and take it as a reference).
+`/remove_row` <br>
+This command instead allows you remove a specific row from the file with all the restaurants suggestions, you just need to type, after the command, the number of the row you want to remove. <br>
 <br>
 <br>
 
