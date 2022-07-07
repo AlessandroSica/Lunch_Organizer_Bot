@@ -200,10 +200,10 @@ unzip ngrok-stable-linux-arm.zip
 
 (rmember that here we are on Linux) <br>
 Then you need to insert your authtoken, (the same as the one before):
-`ngrok config add-authtoken <token>` <br>
+`./ngrok config add-authtoken <token>` <br>
 
 And finally you can strat ngrok at the port you want, (just like on windows): <br>
-`ngrok http 5000` <br>
+`./ngrok http 5000` <br>
 
 And also this time you will need to rewrite the link you get in the slash commands, (look in the previous explanation).
 
