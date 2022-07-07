@@ -66,17 +66,37 @@ Yuo will receive the last message, in the cahannel this time, where the bot will
 ![image](https://user-images.githubusercontent.com/85867861/177568493-02c8c6ae-fffb-4af1-b467-3d4155e429bf.png)
 <br>
 <br>
-There are also slash commands. <br>
-To create a slash command you have to go to [this link](https://api.slack.com/apps) and create them following the instruction given (try to be as brief as possible in yor descriptions of the commands or they won't be fully readable). <br>
-Then in order to use them you first need to create a server. In order to do this I used [ngrok](https://ngrok.com/docs/getting-started). <br>
-In order to activate it in local you first need to install it, which you can do it from the terminal by typing: <br>
+**There are also slash commands:** <br>
 
-`/list_lunch_places` <br>
+To create a slash command you have to go to [this link](https://api.slack.com/apps) and create them following the instruction given (try to be as brief as possible in yor descriptions of the commands or they won't be fully readable). <br>
+Then in order to use them you first need to create a server, and the url of the server will be the one you will put in your slash command (in the "Request URL" field when you create one). <br>
+
+In order to do this I used [ngrok](https://ngrok.com/docs/getting-started). <br>
+In order to activate it in local you first need to install it, you can follow  [this link](https://ngrok.com/download), or if you use window you can do it from the terminal by typing, (make sure to install in in the right folder, I installed it in \Lunch_Organizer_Bot, so to move in that folder I typed cd in the terminal and then the path for that folder): <br>
+`choco install ngrok` <br>
+
+Then you should make an [account on ngrok](https://ngrok.com/product), get your [Authtoken](https://dashboard.ngrok.com/get-started/your-authtoken) and type: <br>
+`ngrok config add-authtoken <token>` <br>
+
+And you should repalce `<token>` with your authtoken. <br>
+Then you can start ngrok, make sure that you are in the right folder.You can start it on the port you want, which has to be the same as the one of your program, (I used the port 5000): <br>
+`ngrok http 5000` <br>
+
+After that, you get a link (which will be different each time if you use the free version of ngrok, so if you restart the server you will need to substitute the link each time), which you can paste in the "Request URL" field when creating a slash command: <br> 
+<img width="522" alt="image" src="https://user-images.githubusercontent.com/85867861/177743709-2b1b99e4-7a35-4b27-9353-28f0ab10ce17.png"> <br>
+
+Lets look at each slash command: <br>
+First command: `/list_lunch_places` <br>
 This command allows you to see a table containing all the info about the restaurants that are in the file with all the restaurants suggestions. And if you type "raw" after the command it will send you the raw file in the direct chat you have with the bot. <br>
-`/add_row` <br>
-Then this command will allow you to add a new row to the file with all the restaurants suggestions. The bot will first check if the information provided are in the right format. If they aren't it will tell you to put them in the right format (you can see the actual file and take it as a reference).
-`/remove_row` <br>
+To create this slash command type `/add_row` in the "Command" field when you create it, and in the URL field, after you have written your ngrok URL type ".../list_lunch_places". <br>
+<br>
+Second command: `/add_row` <br>
+Then this command will allow you to add a new row to the file with all the restaurants suggestions. The bot will first check if the information provided are in the right format. If they aren't it will tell you to put them in the right format (you can see the actual file and take it as a reference). <br>
+To create this slash command type `/add_row` in the "Command" field when you create it, and in the URL field, after you have written your ngrok URL type ".../add_row". <br>
+<br>
+Third command: `/remove_row` <br>
 This command instead allows you remove a specific row from the file with all the restaurants suggestions, you just need to type, after the command, the number of the row you want to remove. <br>
+To create this slash command type `/remove_row` in the "Command" field when you create it, and in the URL field, after you have written your ngrok URL type ".../remove_row". <br>
 <br>
 <br>
 
@@ -158,7 +178,7 @@ This will open another editor, where you need to write: <br>
 ```
 @reboot ~/start-lunch-bot.sh
 0 12 * * 0-5 ~/request.sh
-30 12 * * 0-5 ~/request2.sh
+45 12 * * 0-5 ~/request2.sh
 10 13 * * 0-5 ~/request1.sh
 ```
 Here you can write all the right names of your file, including the one that starts at every reboot and the other for three messages. <br> 
@@ -171,6 +191,21 @@ Then you can select the time you prefer by writing first the minutes and then th
 
 (asterisk means always) <br>
 Then you can close the editor. <br>
+
+In order to activate ngrok on your Raspberry you need to go in the folder you prefer and type: <br>
+```
+wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip
+unzip ngrok-stable-linux-arm.zip
+```
+
+(rmember that here we are on Linux) <br>
+Then you need to insert your authtoken, (the same as the one before):
+`ngrok config add-authtoken <token>` <br>
+
+And finally you can strat ngrok at the port you want, (just like on windows): <br>
+`ngrok http 5000` <br>
+
+And also this time you will need to rewrite the link you get in the slash commands, (look in the previous explanation).
 
 If you want now you can do a reboot by typing: <br>
 `sudo reboot` <br>
