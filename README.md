@@ -109,7 +109,7 @@ After you configure it you need to know its IP adress (check again the previous 
 So after you pluged-in the Raspberry Pi, you attached it to the lan, or gave it access to the wifi network and if the device is near your computer, only then you can run the following code on your terminal, with the respectivee IP adress: <br>
 example <br>
 `ssh pi@67.543.345.65` <br>
-or if it is note renamed <br>
+or if it is not renamed or you don't know the IP<br>
 `ssh pi@raspberrypi.local` <br>
 The first time it will ask you if you are sure and you want to continue, you can answer "yes". <br>
 Then it will ask you to input a password, in this case the default one is `raspberry`, later it is suggested to change it for more security. <br>
@@ -212,5 +212,5 @@ If you want now you can do a reboot by typing: <br>
 After that your Raspberry Pi should be ready to go! When you want to use it you just need to plug it in.
 And if you want connect again to it just type the first command we typed before to connect: <br>
 `ssh pi@67.543.345.65` <br>
-Just remember to use the right IP adress, or if it is note renamed you can also write: <br>
+Just remember to use the right IP adress, or if it is not renamed or you don't know the IP you can also write: <br>
 `ssh pi@raspberrypi.local` <br>
