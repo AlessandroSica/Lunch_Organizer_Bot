@@ -281,10 +281,10 @@ def CommandShowFile():
 def CommandRemoveRowFile():
     db_path = GetRestaurantsPath()
     places_for_lunch_file = ReadRestaurantsFile()
-    selected_row = int(request.form["text"])
+    selected_row = int(request.form["text"]) +1
     lines = []
 
-    if selected_row > -1 and selected_row < len(places_for_lunch_file):
+    if selected_row > 0 and selected_row < len(places_for_lunch_file) + 1:
         with open(db_path, 'r', encoding='utf-8') as fp:
             lines = fp.readlines()
 
@@ -293,7 +293,7 @@ def CommandRemoveRowFile():
                 if number != selected_row:
                     fp.write(line)
 
-        return """Row {0} was removed from the "suggested restaurants" file""".format(selected_row)
+        return """Row {0} was removed from the "suggested restaurants" file.""".format(selected_row - 1)
     else:
         return "Wrong Input"
 
