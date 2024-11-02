@@ -4,7 +4,7 @@ This bot allows you to organize your lunch with your colleagues. It is coded in 
 The bot sends you a message at a specific time on Slack, where it asks you if you have already decided where to lunch. <br>
 Then it also gives you three suggestions on possible restaurants to chose from, that are randomly chosen from a list. <br>
 Then you can choose and see what the others chose by reacting to the message with the respective emoji of the restaurant. <br>
-After that the bot with another messageto will remind you to order your lunch, and it will also say which was the restaurant with the most reactions. <br>
+After that the bot will send you another message to remind you to order your lunch, and it will also say which was the restaurant with the most reactions. <br>
 Then it will send a final message where it suggests you to go and grab food, and ask you where you would like to lunch. You can answer by reacting with the respective number of the place you want, which you can choose between the list of option shown. <br>
 There are also slash commands that can be used to see the file containing the restaurants suggestion, to add a new row to it or to remove an already existing one. <br>
 
